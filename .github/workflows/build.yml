@@ -1,0 +1,67 @@
+name: Compila eseguibili
+
+# Si avvia a mano dalla scheda "Actions" oppure quando pubblichi un tag (es. v1.0)
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write   # serve per allegare i file alla release
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            nome: windows
+            modo: --onefile
+          - os: ubuntu-latest
+            nome: linux
+            modo: --onefile
+          - os: macos-latest        # Mac con chip Apple (M1, M2, ...)
+            nome: macos-apple-silicon
+            modo: --onedir
+          - os: macos-15-intel      # Mac con processore Intel
+            nome: macos-intel
+            modo: --onedir
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installa le dipendenze
+        run: pip install pyinstaller matplotlib
+
+      - name: Compila
+        run: pyinstaller --windowed ${{ matrix.modo }} --name Combinatoria combinatoria.py
+
+      - name: Prepara l'archivio
+        run: |
+          cd dist
+          case "${{ runner.os }}" in
+            Windows) 7z a ../Combinatoria-${{ matrix.nome }}.zip Combinatoria.exe ;;
+            Linux)   tar -czf ../Combinatoria-${{ matrix.nome }}.tar.gz Combinatoria ;;
+            macOS)   ditto -c -k --keepParent Combinatoria.app ../Combinatoria-${{ matrix.nome }}.zip ;;
+          esac
+
+      - name: Carica tra gli artefatti
+        uses: actions/upload-artifact@v4
+        with:
+          name: Combinatoria-${{ matrix.nome }}
+          path: Combinatoria-${{ matrix.nome }}.*
+
+      - name: Allega alla release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Combinatoria-${{ matrix.nome }}.*
