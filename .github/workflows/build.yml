@@ -45,18 +45,26 @@ jobs:
       - name: Compila
         run: pyinstaller --windowed ${{ matrix.modo }} --name Combinatoria combinatoria.py
 
-      - name: Prepara il file da distribuire
+      - name: Prepara i file da distribuire
         run: |
+          N=Combinatoria-${{ matrix.nome }}
           case "${{ runner.os }}" in
-            Windows) cp dist/Combinatoria.exe Combinatoria-${{ matrix.nome }}.exe ;;
-            Linux)   cp dist/Combinatoria Combinatoria-${{ matrix.nome }} ;;
+            Windows)
+              cp dist/Combinatoria.exe $N.exe                  # eseguibile diretto
+              7z a $N.zip ./dist/Combinatoria.exe              # archivio compresso
+              ;;
+            Linux)
+              cp dist/Combinatoria $N                          # eseguibile diretto
+              tar -czf $N.tar.gz -C dist Combinatoria          # archivio (conserva i permessi)
+              ;;
             macOS)
               # immagine disco con l'app e il collegamento ad Applicazioni
               mkdir dmg
               cp -R dist/Combinatoria.app dmg/
               ln -s /Applications dmg/Applications
-              hdiutil create -volname Combinatoria -srcfolder dmg -ov -format UDZO \
-                Combinatoria-${{ matrix.nome }}.dmg
+              hdiutil create -volname Combinatoria -srcfolder dmg -ov -format UDZO $N.dmg
+              # archivio compresso dell'app
+              ditto -c -k --keepParent dist/Combinatoria.app $N.zip
               ;;
           esac
 
