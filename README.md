@@ -18,18 +18,18 @@ Per ogni tipologia l'albero mostra, passo dopo passo, quante scelte sono possibi
 
 Scarica la versione per il tuo sistema dalla pagina **[Releases](https://github.com/ferale90/combinatoria/releases)**:
 
-| Sistema | File |
-|---|---|
-| Windows | `Combinatoria-windows.exe` |
-| macOS (chip Apple M1, M2, …) | `Combinatoria-macos-apple-silicon.dmg` |
-| macOS (processore Intel) | `Combinatoria-macos-intel.dmg` |
-| Linux | `Combinatoria-linux` |
+| Sistema | Pronto all'uso | Archivio compresso |
+|---|---|---|
+| Windows | `Combinatoria-windows.exe` | `Combinatoria-windows.zip` |
+| macOS (chip Apple M1, M2, …) | `Combinatoria-macos-apple-silicon.dmg` | `Combinatoria-macos-apple-silicon.zip` |
+| macOS (processore Intel) | `Combinatoria-macos-intel.dmg` | `Combinatoria-macos-intel.zip` |
+| Linux | `Combinatoria-linux` | `Combinatoria-linux.tar.gz` |
 
-Non serve installare Python.
+I due file contengono lo stesso programma: scegli quello che preferisci. Non serve installare Python.
 
 **macOS.** Apri il file `.dmg` e trascina Combinatoria nella cartella Applicazioni. L'app non è firmata da Apple, quindi al primo avvio viene bloccata: prova ad aprirla una volta, poi vai in *Impostazioni di Sistema → Privacy e sicurezza* e clicca **Apri comunque**. Dalla volta successiva si apre normalmente.
 
-**Linux.** Il browser non conserva il permesso di esecuzione, quindi dopo il download va reso eseguibile: `chmod +x Combinatoria-linux`, poi `./Combinatoria-linux`.
+**Linux.** Il browser non conserva il permesso di esecuzione, quindi dopo il download va reso eseguibile: `chmod +x Combinatoria-linux`, poi `./Combinatoria-linux`. L'archivio `.tar.gz` conserva invece il permesso: basta estrarlo e avviare `Combinatoria`.
 
 **Windows.** Alcuni antivirus possono segnalare l'eseguibile come sconosciuto: è un comportamento comune per i programmi non firmati creati con PyInstaller.
 
