@@ -1,10 +1,10 @@
 name: Compila eseguibili
 
-# Si avvia a mano dalla scheda "Actions" oppure quando pubblichi un tag (es. v1.0)
+# Si avvia a mano dalla scheda "Actions" oppure quando pubblichi una release
 on:
   workflow_dispatch:
-  push:
-    tags: ["v*"]
+  release:
+    types: [published]
 
 permissions:
   contents: write   # serve per allegare i file alla release
@@ -45,23 +45,29 @@ jobs:
       - name: Compila
         run: pyinstaller --windowed ${{ matrix.modo }} --name Combinatoria combinatoria.py
 
-      - name: Prepara l'archivio
+      - name: Prepara il file da distribuire
         run: |
-          cd dist
           case "${{ runner.os }}" in
-            Windows) 7z a ../Combinatoria-${{ matrix.nome }}.zip Combinatoria.exe ;;
-            Linux)   tar -czf ../Combinatoria-${{ matrix.nome }}.tar.gz Combinatoria ;;
-            macOS)   ditto -c -k --keepParent Combinatoria.app ../Combinatoria-${{ matrix.nome }}.zip ;;
+            Windows) cp dist/Combinatoria.exe Combinatoria-${{ matrix.nome }}.exe ;;
+            Linux)   cp dist/Combinatoria Combinatoria-${{ matrix.nome }} ;;
+            macOS)
+              # immagine disco con l'app e il collegamento ad Applicazioni
+              mkdir dmg
+              cp -R dist/Combinatoria.app dmg/
+              ln -s /Applications dmg/Applications
+              hdiutil create -volname Combinatoria -srcfolder dmg -ov -format UDZO \
+                Combinatoria-${{ matrix.nome }}.dmg
+              ;;
           esac
 
       - name: Carica tra gli artefatti
         uses: actions/upload-artifact@v6
         with:
           name: Combinatoria-${{ matrix.nome }}
-          path: Combinatoria-${{ matrix.nome }}.*
+          path: Combinatoria-${{ matrix.nome }}*
 
       - name: Allega alla release
-        if: startsWith(github.ref, 'refs/tags/')
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: Combinatoria-${{ matrix.nome }}.*
+          files: Combinatoria-${{ matrix.nome }}*
