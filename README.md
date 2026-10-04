@@ -4,6 +4,8 @@ Piccola applicazione per visualizzare con diagrammi ad albero i principali raggr
 
 Per ogni tipologia l'albero mostra, passo dopo passo, quante scelte sono possibili e quanti nodi si ottengono, così il legame con la formula risulta evidente.
 
+![Schermata di Combinatoria](schermata_combinatoria_v1.1.0.png)
+
 | Tipologia | Formula |
 |---|---|
 | Disposizioni con ripetizione | D′(n, k) = nᵏ |
@@ -18,14 +20,16 @@ Scarica la versione per il tuo sistema dalla pagina **[Releases](https://github.
 
 | Sistema | File |
 |---|---|
-| Windows | `Combinatoria-windows.zip` |
-| macOS (chip Apple M1, M2, …) | `Combinatoria-macos-apple-silicon.zip` |
-| macOS (processore Intel) | `Combinatoria-macos-intel.zip` |
-| Linux | `Combinatoria-linux.tar.gz` |
+| Windows | `Combinatoria-windows.exe` |
+| macOS (chip Apple M1, M2, …) | `Combinatoria-macos-apple-silicon.dmg` |
+| macOS (processore Intel) | `Combinatoria-macos-intel.dmg` |
+| Linux | `Combinatoria-linux` |
 
-Non serve installare Python: basta estrarre l'archivio e avviare il programma.
+Non serve installare Python.
 
-**macOS.** L'app non è firmata da Apple, quindi al primo avvio viene bloccata. Prova ad aprirla una volta, poi vai in *Impostazioni di Sistema → Privacy e sicurezza* e clicca **Apri comunque**. Dalla volta successiva si apre normalmente.
+**macOS.** Apri il file `.dmg` e trascina Combinatoria nella cartella Applicazioni. L'app non è firmata da Apple, quindi al primo avvio viene bloccata: prova ad aprirla una volta, poi vai in *Impostazioni di Sistema → Privacy e sicurezza* e clicca **Apri comunque**. Dalla volta successiva si apre normalmente.
+
+**Linux.** Il browser non conserva il permesso di esecuzione, quindi dopo il download va reso eseguibile: `chmod +x Combinatoria-linux`, poi `./Combinatoria-linux`.
 
 **Windows.** Alcuni antivirus possono segnalare l'eseguibile come sconosciuto: è un comportamento comune per i programmi non firmati creati con PyInstaller.
 
