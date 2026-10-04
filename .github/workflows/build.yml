@@ -22,7 +22,7 @@ jobs:
             nome: linux
             modo: --onefile
           - os: macos-latest        # Mac con chip Apple (M1, M2, ...)
-            nome: macos-apple-silicon
+            nome: macos
             modo: --onedir
           - os: macos-15-intel      # Mac con processore Intel
             nome: macos-intel
@@ -39,6 +39,16 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Determina la versione
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            V="${{ github.event.release.tag_name }}"
+            V="${V#v}"                       # v1.2.0 -> 1.2.0
+          else
+            V="dev-${GITHUB_SHA::7}"         # avvio manuale: dev + commit
+          fi
+          echo "VERSIONE=$V" >> "$GITHUB_ENV"
+
       - name: Installa le dipendenze
         run: pip install pyinstaller matplotlib
 
@@ -47,7 +57,7 @@ jobs:
 
       - name: Prepara i file da distribuire
         run: |
-          N=Combinatoria-${{ matrix.nome }}
+          N=Combinatoria-$VERSIONE-${{ matrix.nome }}
           case "${{ runner.os }}" in
             Windows)
               cp dist/Combinatoria.exe $N.exe                  # eseguibile diretto
@@ -71,11 +81,11 @@ jobs:
       - name: Carica tra gli artefatti
         uses: actions/upload-artifact@v6
         with:
-          name: Combinatoria-${{ matrix.nome }}
-          path: Combinatoria-${{ matrix.nome }}*
+          name: Combinatoria-${{ env.VERSIONE }}-${{ matrix.nome }}
+          path: Combinatoria-${{ env.VERSIONE }}-${{ matrix.nome }}*
 
       - name: Allega alla release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: Combinatoria-${{ matrix.nome }}*
+          files: Combinatoria-${{ env.VERSIONE }}-${{ matrix.nome }}*
